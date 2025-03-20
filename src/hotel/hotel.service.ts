@@ -24,4 +24,9 @@ export class HotelService {
 
     return findHotel;
   }
+
+  async createHotel(name: string, price: number): Promise<Hotel> {
+    const createHotel = this.hotel.create({ name: name, price: price });
+    return this.hotel.save(createHotel);
+  }
 }
