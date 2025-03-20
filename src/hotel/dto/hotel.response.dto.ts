@@ -1,3 +1,10 @@
+export class HotelDto {
+  id: number;
+  name: string;
+  price: number;
+  doingtime: string;
+}
+
 export class HotelResponse<Proms> {
   RespCode: number;
   RespMessage: string;
