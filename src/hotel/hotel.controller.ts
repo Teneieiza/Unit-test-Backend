@@ -1,11 +1,12 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import {
   HotelDashboardResponse,
+  HotelDto,
   HotelResponse,
 } from './dto/hotel.response.dto';
 import { Hotel } from './hotel.entity';
 import { HotelService } from './hotel.service';
-import { HotelRequest } from './dto/hotel.request.dto';
+import { HotelRequest, SearchHotelRequest } from './dto/hotel.request.dto';
 
 @Controller('api')
 export class HotelController {
@@ -27,7 +28,7 @@ export class HotelController {
   }
 
   @Get('/listhotel')
-  async getListHotel(): Promise<HotelResponse<Hotel[]>> {
+  async getListHotel(): Promise<HotelResponse<HotelDto[]>> {
     const listHotel = await this.hotelservice.getListHotel();
     return {
       RespCode: 200,
@@ -37,7 +38,9 @@ export class HotelController {
   }
 
   @Get('/listhotel/:id')
-  async getHotelById(@Param('id') id: number): Promise<HotelResponse<Hotel[]>> {
+  async getHotelById(
+    @Param('id') id: number,
+  ): Promise<HotelResponse<HotelDto[]>> {
     const oneHotel = await this.hotelservice.getHotelByID(id);
     return {
       RespCode: 200,
@@ -46,8 +49,23 @@ export class HotelController {
     };
   }
 
+  @Post('/search/hotel')
+  async searchHotelByDate(
+    @Body() searchhotelrequest: SearchHotelRequest,
+  ): Promise<HotelResponse<HotelDto[]>> {
+    const hotel = await this.hotelservice.searchHotelByDate(searchhotelrequest);
+
+    return {
+      RespCode: 200,
+      RespMessage: 'success',
+      Result: hotel,
+    };
+  }
+
   @Get('/dashboard/hotel')
-  async getListHotelWithDashboard(): Promise<HotelDashboardResponse<Hotel[]>> {
+  async getListHotelWithDashboard(): Promise<
+    HotelDashboardResponse<HotelDto[]>
+  > {
     const dashboardHotel = await this.hotelservice.getListHotelWithDashboard();
     return {
       RespCode: 200,
