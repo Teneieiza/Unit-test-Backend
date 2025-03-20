@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { HotelResponse } from './dto/hotel.response.dto';
 import { Hotel } from './hotel.entity';
 import { HotelService } from './hotel.service';
@@ -14,6 +14,16 @@ export class HotelController {
       RespCode: 200,
       RespMessage: 'success',
       Result: listHotel,
+    };
+  }
+
+  @Get('/listhotel/:id')
+  async getHotelById(@Param('id') id: number): Promise<HotelResponse<Hotel[]>> {
+    const oneHotel = await this.hotelservice.getHotelByID(id);
+    return {
+      RespCode: 200,
+      RespMessage: 'success',
+      Result: [oneHotel],
     };
   }
 }
