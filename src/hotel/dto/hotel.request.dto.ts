@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class HotelRequest {
   @IsString()
@@ -8,4 +9,11 @@ export class HotelRequest {
   @IsNumber()
   @IsNotEmpty()
   price: number;
+}
+
+export class SearchHotelRequest {
+  @IsDate()
+  @IsNotEmpty()
+  @Type(() => Date)
+  date: Date;
 }
