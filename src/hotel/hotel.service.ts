@@ -10,12 +10,18 @@ export class HotelService {
     private readonly hotel: Repository<Hotel>,
   ) {}
 
-  //Get all hotel
+  //POST create hotel
+  async createHotel(name: string, price: number): Promise<Hotel> {
+    const createHotel = this.hotel.create({ name: name, price: price });
+    return this.hotel.save(createHotel);
+  }
+
+  //GET all hotel
   async getListHotel(): Promise<Hotel[]> {
     return this.hotel.find();
   }
 
-  //Get one hotel
+  //GET one hotel
   async getHotelByID(id: number): Promise<Hotel> {
     const findHotel = await this.hotel.findOne({ where: { id } });
 
@@ -25,8 +31,38 @@ export class HotelService {
     return findHotel;
   }
 
-  async createHotel(name: string, price: number): Promise<Hotel> {
-    const createHotel = this.hotel.create({ name: name, price: price });
-    return this.hotel.save(createHotel);
+  //GET Dashboard hotel
+  async getListHotelWithDashboard() {
+    const hotels = await this.hotel.find();
+
+    if (!hotels.length) {
+      throw new NotFoundException('No hotels found');
+    }
+
+    const allHotel = hotels.length;
+
+    const highestPrice = hotels.reduce((prev, current) =>
+      current.price > prev.price ? current : prev,
+    );
+
+    const lowestPrice = hotels.reduce((prev, current) =>
+      current.price < prev.price ? current : prev,
+    );
+
+    const lastHotelAdded = hotels.reduce((prev, current) =>
+      new Date(current.doingtime) > new Date(prev.doingtime) ? current : prev,
+    );
+
+    return {
+      Data: hotels,
+      Dashboard: {
+        AllHotel: allHotel,
+        Price: {
+          High: highestPrice.name,
+          Low: lowestPrice.name,
+        },
+        LastHotelAdd: new Date(lastHotelAdded.doingtime).toISOString(),
+      },
+    };
   }
 }
