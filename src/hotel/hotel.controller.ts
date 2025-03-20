@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseFilters,
+  UseInterceptors,
+} from '@nestjs/common';
 import {
   HotelDashboardResponse,
   HotelDto,
@@ -7,8 +15,12 @@ import {
 import { Hotel } from './hotel.entity';
 import { HotelService } from './hotel.service';
 import { HotelRequest, SearchHotelRequest } from './dto/hotel.request.dto';
+import { ResponseInterceptor } from 'src/config/errorhandler/response.error';
+import { HttpExceptionFilter } from 'src/config/errorhandler/exception.error';
 
 @Controller('api')
+@UseInterceptors(ResponseInterceptor)
+@UseFilters(HttpExceptionFilter)
 export class HotelController {
   constructor(private readonly hotelservice: HotelService) {}
 
